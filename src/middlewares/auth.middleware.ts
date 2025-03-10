@@ -12,12 +12,12 @@ export class AuthMiddleware implements NestMiddleware {
 
     const token = authHeader.split(' ').at(1) || '';
 
-    try {
-      const payload =
+    // try {
+    //   const payload =
       
-    } catch (error) {
+    // } catch (error) {
       
-    }
+    // }
 
     next();
   }

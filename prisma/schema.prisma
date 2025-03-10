@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model User {
+  id       Int  @id @default(autoincrement()) @map("_id")
+  name     String
+  email    String  @unique
+  password String
+  products Product[]
+  payments Payment[]
+  carts    ShoppingCart[]
+}
+
+model Product {
+  id          Int  @id @default(autoincrement()) @map("_id")
+  name        String
+  price       Float
+  description String
+  user        User?   @relation(fields: [userId], references: [id])
+  userId      Int 
+  payments    Payment[]
+  carts       ShoppingCartProduct[]
+}
+
+model ShoppingCart {
+  id       Int  @id @default(autoincrement()) @map("_id") 
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int 
+  products ShoppingCartProduct[]
+}
+
+model ShoppingCartProduct {
+  id         Int  @id @default(autoincrement()) @map("_id") 
+  shoppingCart ShoppingCart @relation(fields: [shoppingCartId], references: [id])
+  shoppingCartId Int 
+  product    Product @relation(fields: [productId], references: [id])
+  productId  Int  
+  quantity   Int
+}
+
+model Payment {
+  id            Int  @id @default(autoincrement()) @map("_id") 
+  amount        Float
+  currency      String
+  paymentMethod String
+  paymentDate   DateTime
+  user          User    @relation(fields: [userId], references: [id])
+  userId        Int  
+  product       Product? @relation(fields: [productId], references: [id])
+  productId     Int  
+}
+

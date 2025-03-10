@@ -8,11 +8,13 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  UseFilters,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { CreateAuthDto, UpdateAuthDto} from './dto';
+import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 
+@UseFilters(HttpExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
