@@ -6,25 +6,19 @@ import {
   Patch,
   Param,
   Delete,
-  HttpException,
-  HttpStatus,
-  UseFilters,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto, UpdateAuthDto} from './dto';
-import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
+import { RegisterAuthDto, LoginAuthDto } from './dto';
 
-@UseFilters(HttpExceptionFilter)
+// @UseFilters(HttpExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  create(@Body() body: { [key: string]: any }) {
-    const [error, createAuthDto] = CreateAuthDto.create(body);
-    if (error) throw new HttpException(error, HttpStatus.BAD_REQUEST);
-
-    this.authService.create(createAuthDto!);
+  async create(@Body() registerAuthDto: RegisterAuthDto) {
+    return this.authService.create(registerAuthDto);
   }
 
   @Get()
@@ -38,12 +32,12 @@ export class AuthController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
+  update(@Param('id') id: string, @Body() updateAuthDto: LoginAuthDto) {
     return this.authService.update(+id, updateAuthDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.authService.remove(id);
   }
 }
