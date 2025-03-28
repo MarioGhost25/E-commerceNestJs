@@ -9,7 +9,5 @@ import { PrismaModule } from 'prisma/prisma.module';
   providers: [AuthService],
 })
 export class AuthModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(AuthMiddleware).forRoutes('*');
-  // }
+
 }

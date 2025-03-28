@@ -6,9 +6,8 @@ import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { PaymentModule } from './payment/payment.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-// import { JwtModule } from './jwt/jwt.module';
 import { UserModule } from './user/user.module';
-import { BrandsModule } from './brands/brands.module';
+
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { BrandsModule } from './brands/brands.module';
       isGlobal: true,
     }),
     UserModule,
-    BrandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

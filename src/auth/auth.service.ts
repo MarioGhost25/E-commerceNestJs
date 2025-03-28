@@ -1,33 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { PrismaService } from 'prisma/prisma-service';
-import { AuthEntity } from './entities/auth.entity';
+
 
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService) {}
-  async create(registerAuthDto: RegisterAuthDto): Promise<AuthEntity> {
+  async SingUp(registerAuthDto: RegisterAuthDto) {
     const newUser = await this.prismaService.user.create({
       data: registerAuthDto,
     });
 
-    return AuthEntity.fromObject(newUser);
+    const {name, email} = newUser;
+
+    return {
+      user:{
+        name,
+        email,
+      }
+      
+    }
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login(loginAuthDto: LoginAuthDto){
+    const {email, password} = loginAuthDto;
+    const user = await this.prismaService.user.findUnique({
+      where:{
+        email
+      }
+    })
+    
+    if(!user) throw new NotFoundException('User not found');
+    if(user.password !== password) throw new BadRequestException('Invalid password');
+
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+  
 
-  update(id: number, updateAuthDto: LoginAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }

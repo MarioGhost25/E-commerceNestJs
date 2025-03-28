@@ -10,55 +10,54 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_URL")
 }
 
 model User {
-  id       Int  @id @default(autoincrement()) 
+  id       Int     @id @default(autoincrement())
   name     String
   email    String  @unique
   password String
   products Product[]
   payments Payment[]
-  carts    ShoppingCart[]
+  cart     ShoppingCartProduct[]
 }
 
 model Product {
-  id          Int  @id @default(autoincrement()) 
+  id          Int     @id @default(autoincrement())
   name        String
   price       Float
   description String
-  user        User?   @relation(fields: [userId], references: [id])
-  userId      Int 
-  payments    Payment[]
-  carts       ShoppingCartProduct[]
-}
-
-model ShoppingCart {
-  id       Int  @id @default(autoincrement()) 
-  user     User    @relation(fields: [userId], references: [id])
-  userId   Int 
-  products ShoppingCartProduct[]
+  userId      Int
+  user        User    @relation(fields: [userId], references: [id])
+  cartEntries ShoppingCartProduct[]
+  payments    PaymentProduct[]
 }
 
 model ShoppingCartProduct {
-  id         Int  @id @default(autoincrement()) 
-  shoppingCart ShoppingCart @relation(fields: [shoppingCartId], references: [id])
-  shoppingCartId Int 
-  product    Product @relation(fields: [productId], references: [id])
-  productId  Int  
-  quantity   Int
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  productId Int
+  quantity  Int
+  user      User    @relation(fields: [userId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Payment {
-  id            Int  @id @default(autoincrement()) 
+  id            Int     @id @default(autoincrement())
   amount        Float
   currency      String
   paymentMethod String
   paymentDate   DateTime
+  userId        Int
   user          User    @relation(fields: [userId], references: [id])
-  userId        Int  
-  product       Product? @relation(fields: [productId], references: [id])
-  productId     Int  
+  products      PaymentProduct[]
 }
 
+model PaymentProduct {
+  id        Int  @id @default(autoincrement())
+  paymentId Int
+  productId Int
+  payment   Payment @relation(fields: [paymentId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
