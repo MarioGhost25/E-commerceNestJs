@@ -7,17 +7,20 @@ import { PaymentModule } from './payment/payment.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { envConfig, joiValidationSchema } from './config';
+
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      load: [ envConfig ],
+      validationSchema: joiValidationSchema,
+    }),
     ProductModule,
     ShoppingCartModule,
     PaymentModule,
     AuthModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
     UserModule,
   ],
   controllers: [AppController],
