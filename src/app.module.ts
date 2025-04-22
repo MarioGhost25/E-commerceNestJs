@@ -6,22 +6,31 @@ import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { PaymentModule } from './payment/payment.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-import { envConfig, joiValidationSchema } from './config';
+import { joiValidationSchema } from './config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [ envConfig ],
       validationSchema: joiValidationSchema,
+    }),
+
+    TypeOrmModule.forRoot({
+      type:'postgres',
+      host: process.env.DB_HOST,
+      port: +(process.env.DB_PORT || 5432),
+      database: process.env.DB_NAME,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      autoLoadEntities: true,
+      synchronize: true,
     }),
     ProductModule,
     ShoppingCartModule,
     PaymentModule,
     AuthModule,
-    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

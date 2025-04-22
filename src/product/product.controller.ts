@@ -6,12 +6,13 @@ import {
   Patch,
   Param,
   Delete,
-  // HttpCode,
-  // Redirect,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { UUID } from 'typeorm/driver/mongodb/bson.typings';
+import { IsUUID } from 'class-validator';
+
 
 @Controller('product')
 export class ProductController {
@@ -21,22 +22,15 @@ export class ProductController {
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
+
   @Get()
-  getAll() {
-    return 'Lista de productos';
+  findAll() {
+    return this.productService.findAll();  
   }
 
-  // @Get('products')
-  // @HttpCode(400)
-  // @Header('Bearer-token')
-  // @Redirect('https://nestjs.com', 301)
-  // findAll() {
-  //   return 'This action returns all products';
-  // }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productService.findOne(id);
   }
 
   @Patch(':id')
@@ -45,7 +39,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe ) id: string) {
+    return this.productService.remove(id);
   }
 }

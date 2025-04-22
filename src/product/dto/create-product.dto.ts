@@ -1,20 +1,37 @@
+import { IsArray, IsIn, IsInt, IsNumber, IsOptional, IsPositive, IsString, MinLength } from "class-validator";
+
 export class CreateProductDto {
-  id: number;
-  name: string;
-  description: string;
-  constructor(id: number, name: string, description: string) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-  }
+  @IsString()
+  @MinLength(1)
+  title: string;
 
-  static create(object: { [key: string]: any }): [string, CreateProductDto] {
-    const { id, name, description } = object;
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  price?: number;
 
-    // if (!id) return ['id is required', null];
-    // if (!name) return ['name is required', null];
-    // if (!description) return ['description is required', null];
+  @IsString()
+  @IsOptional()
+  description?: string;
 
-    return ['', new CreateProductDto(id, name, description)];
-  }
+  @IsString()
+  @IsOptional()
+  slug?: string;
+
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  stock?: number; 
+
+  // @IsString({ each: true }) 
+  // @IsArray()
+  // sizes: string[]
+
+  @IsIn(['men','women','kid','unisex'])
+  gender: string;
+
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  tags: string[];
 }

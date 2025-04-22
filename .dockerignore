@@ -1,7 +1,22 @@
 
 
+# Dependencias que se instalan en el contenedor
 dist/
 node_modules/
 .gitignore
 
-.git/
+.git/ 
+# Configuración de bases de datos locales (si usas Prisma)
+prisma/.db
+postgres/
+
+
+
+# Archivos y carpetas generadas por el sistema
+.git
+.gitignore
+npm-debug.log
+yarn-error.log
+.DS_Store
+.vscode/
+.idea/
