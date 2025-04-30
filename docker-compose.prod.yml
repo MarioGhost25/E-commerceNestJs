@@ -16,11 +16,8 @@ services:
     ports:
       - "${PORT}:${PORT}"
     # working_dir: /var/www/pokedex
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PORT: ${PORT}
+    env_file:
+      - .env.prod
       
     # volumes:
     #   - ./:/var/www/pokedex
@@ -29,10 +26,8 @@ services:
     image: postgres:15.3
     container_name: postgres-db
     restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - .env.prod
     volumes:
       - ./postgres:/data/db
     ports:
