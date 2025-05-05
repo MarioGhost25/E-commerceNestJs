@@ -24,6 +24,7 @@ lerna-debug.log*
 
 #Postgres
 /postgres
+/postgres-data
 
 # IDEs and editors
 /.idea

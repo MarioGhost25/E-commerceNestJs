@@ -2,9 +2,15 @@ import {
   Controller,
   Post,
   Body,
+  UseGuards,
+  Get,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginAuthDto } from './dto';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './decorators/get-user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -20,5 +26,21 @@ export class AuthController {
   async login(@Body() loginAuthDto: LoginAuthDto) {
     return await this.authService.login(loginAuthDto);
   }
+
+  @Get('private')
+  @UseGuards( AuthGuard() )
+  testingPrivateRoute(
+    @Req() request: Express.Request,
+    @GetUser() user: User,
+    @GetUser('email') userEmail: string,
+  ) {
+
+
+    return {
+      ok: true,
+      message: 'Hola Mundo Private',
+    }
+  }
+
 }
 
