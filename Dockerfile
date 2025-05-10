@@ -74,7 +74,6 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://localhost:3000/health || exit 1
 
 # TEMPORAL para ver errores mejor:
 # COMENTA esto mientras depuras, luego lo vuelves a poner:
