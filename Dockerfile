@@ -45,35 +45,39 @@
 # CMD [ "node","dist/main" ]
 
 # 1. deps: instalar con npm ci
+# 1. deps: solo dependencias
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# 2. builder: build de tu código
+# 2. builder: compilar Nest
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-# 3. runner: sólo prod
+# 3. runner: contenedor final para producción
 FROM node:20-alpine AS runner
 WORKDIR /usr/src/app
 
-# define entorno
 ENV NODE_ENV=production
-# crea user no‑root
+RUN apk add --no-cache curl        # <-- importante para el healthcheck
+
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-# copia solo lo necesario
+
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 COPY --from=builder /app/dist ./dist
-# expone puerto de NestJS
-EXPOSE 3000
-# opcional: healthcheck
-HEALTHCHECK --interval=30s --timeout=5s CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1
 
-USER appuser
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://localhost:3000/health || exit 1
+
+# TEMPORAL para ver errores mejor:
+# COMENTA esto mientras depuras, luego lo vuelves a poner:
+# USER appuser
+
 CMD ["node", "dist/main"]

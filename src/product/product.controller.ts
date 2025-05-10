@@ -10,8 +10,7 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
-import { IsUUID } from 'class-validator';
+
 
 
 @Controller('product')
